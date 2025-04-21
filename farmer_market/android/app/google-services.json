@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "442091398232",
+    "project_id": "farmer-market-ee034",
+    "storage_bucket": "farmer-market-ee034.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442091398232:android:a2a0f32a19b8507624562d",
+        "android_client_info": {
+          "package_name": "com.example.farmermarket.farmer_market"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtFGyvECdIY4kWLwE0M6VCpDVg4qkXDaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442091398232:android:da167b77ac37788224562d",
+        "android_client_info": {
+          "package_name": "com.ornek.farmer_market"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtFGyvECdIY4kWLwE0M6VCpDVg4qkXDaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
