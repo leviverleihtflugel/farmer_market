@@ -13,7 +13,7 @@ class Product {
     return Product(
       id: id,
       name: map['name'] ?? '',
-      price: (map['price'] ?? 0).toDouble(),
+      price: _safeDouble(map['price']),
     );
   }
 
@@ -22,5 +22,13 @@ class Product {
       'name': name,
       'price': price,
     };
+  }
+
+  // Güvenli dönüşüm için özel yardımcı fonksiyon
+  static double _safeDouble(dynamic value) {
+    if (value is int) return value.toDouble();
+    if (value is double) return value;
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 }

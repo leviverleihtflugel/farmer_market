@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'register_page.dart';
+import 'auth_gate.dart'; // Yeni: Giriş sonrası yönlendirme için
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -28,11 +29,19 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isLoading = true);
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // ✅ Başarılı giriş – AuthGate yönlendirecek
+
+      // ✅ Giriş başarılıysa manuel olarak AuthGate'e yönlendir
+      if (credential.user != null && context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const AuthGate()),
+        );
+      }
+
     } on FirebaseAuthException catch (e) {
       String message = 'Giriş başarısız.';
       if (e.code == 'user-not-found') {

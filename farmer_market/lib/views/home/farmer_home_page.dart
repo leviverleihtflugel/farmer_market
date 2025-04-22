@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/product.dart';
 import '../product/add_product_page.dart';
+import '../auth/login_page.dart';
+import '../profile/profile_page.dart'; // 👤 Profil sayfası için
 
 class FarmerHomePage extends StatelessWidget {
   const FarmerHomePage({super.key});
@@ -18,6 +20,13 @@ class FarmerHomePage extends StatelessWidget {
 
   Future<void> _signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
+    if (context.mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+            (route) => false,
+      );
+    }
   }
 
   @override
@@ -26,6 +35,16 @@ class FarmerHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Çiftçi Ürün Paneli'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Profil',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfilePage()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Çıkış Yap',

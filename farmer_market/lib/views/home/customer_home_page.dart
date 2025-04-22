@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/product.dart';
 import '../auth/login_page.dart';
+import '../profile/profile_page.dart'; // 👈 Profil ekranı import edildi
 
 class CustomerHomePage extends StatelessWidget {
   const CustomerHomePage({super.key});
@@ -22,6 +23,16 @@ class CustomerHomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Ürünler'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            tooltip: 'Profil',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfilePage()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Çıkış Yap',
