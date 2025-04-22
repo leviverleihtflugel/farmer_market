@@ -15,31 +15,41 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
   Future<void> _login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('E-posta ve şifre boş olamaz!')),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: email,
+        password: password,
       );
-      // ✅ Giriş başarılı, AuthGate yönlendirecek
+      // ✅ Başarılı giriş – AuthGate yönlendirecek
     } on FirebaseAuthException catch (e) {
-      String message = "Giriş başarısız.";
+      String message = 'Giriş başarısız.';
       if (e.code == 'user-not-found') {
-        message = "Kullanıcı bulunamadı.";
+        message = 'Kullanıcı bulunamadı.';
       } else if (e.code == 'wrong-password') {
-        message = "Şifre hatalı.";
+        message = 'Şifre hatalı.';
       }
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("❗ $message")),
+          SnackBar(content: Text('❗ $message')),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("⚠️ Hata: ${e.toString()}")),
+          SnackBar(content: Text('⚠️ Hata: $e')),
         );
       }
     } finally {
@@ -58,39 +68,47 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Giriş Yap')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'E-posta',
+                prefixIcon: Icon(Icons.email),
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Şifre',
+                prefixIcon: Icon(Icons.lock),
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               height: 48,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
+                icon: _isLoading
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                )
+                    : const Icon(Icons.login),
+                label: Text(_isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'),
                 onPressed: _isLoading ? null : _login,
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Giriş Yap'),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
             TextButton(
               onPressed: () {
                 Navigator.push(

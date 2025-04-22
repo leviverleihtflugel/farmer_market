@@ -11,6 +11,7 @@ class AddProductPage extends StatefulWidget {
 class _AddProductPageState extends State<AddProductPage> {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
+  bool _isSaving = false;
 
   Future<void> _addProduct() async {
     final name = _nameController.text.trim();
@@ -18,24 +19,36 @@ class _AddProductPageState extends State<AddProductPage> {
 
     if (name.isEmpty || price <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Geçerli ürün adı ve fiyat girin.')),
+        const SnackBar(content: Text('Geçerli bir ürün adı ve fiyat girin.')),
       );
       return;
     }
 
-    await FirebaseFirestore.instance.collection('products').add({
-      'name': name,
-      'price': price,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    setState(() => _isSaving = true);
 
-    if (!context.mounted) return;
+    try {
+      await FirebaseFirestore.instance.collection('products').add({
+        'name': name,
+        'price': price,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Ürün başarıyla eklendi!')),
-    );
+      if (!context.mounted) return;
 
-    Navigator.pop(context); // Ana sayfaya dön
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ Ürün başarıyla eklendi!')),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('⚠️ Hata oluştu: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override
@@ -48,25 +61,44 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ürün Ekle')),
+      appBar: AppBar(title: const Text('Yeni Ürün Ekle')),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Ürün Adı'),
+              decoration: const InputDecoration(
+                labelText: 'Ürün Adı',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.shopping_bag),
+              ),
             ),
             const SizedBox(height: 20),
             TextField(
               controller: _priceController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Fiyat (₺)'),
+              decoration: const InputDecoration(
+                labelText: 'Fiyat (₺)',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.attach_money),
+              ),
             ),
             const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: _addProduct,
-              child: const Text('Ürünü Kaydet'),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton.icon(
+                icon: _isSaving
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                )
+                    : const Icon(Icons.save),
+                label: Text(_isSaving ? 'Kaydediliyor...' : 'Ürünü Kaydet'),
+                onPressed: _isSaving ? null : _addProduct,
+              ),
             ),
           ],
         ),

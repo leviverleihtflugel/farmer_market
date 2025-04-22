@@ -31,17 +31,16 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: ^3.13.0    # Firebase temel yapı
-  firebase_auth: ^5.5.2     # Kullanıcı girişi
-  cloud_firestore: ^5.6.6    # Veritabanı
-  provider: ^6.0.5           # State yönetimi
-  cached_network_image: ^3.2.3 # Resim yükleme
-  image_picker: ^1.0.4 # Ürün fotoğrafı için
-  intl: ^0.18.1 # Fiyat formatı için
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.17.7
+  cloud_firestore: ^4.15.5
+  provider: ^6.0.5
+  cached_network_image: ^3.2.3
+  image_picker: ^1.0.4
+  intl: ^0.18.1
   cupertino_icons: ^1.0.8
+
+
 
 dev_dependencies:
   flutter_test:

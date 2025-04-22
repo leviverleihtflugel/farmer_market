@@ -16,4 +16,11 @@ class Product {
       price: (map['price'] ?? 0).toDouble(),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'price': price,
+    };
+  }
 }

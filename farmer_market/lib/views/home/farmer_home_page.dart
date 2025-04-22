@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/product.dart';
 import '../product/add_product_page.dart';
-import '../auth/login_page.dart';
 
 class FarmerHomePage extends StatelessWidget {
   const FarmerHomePage({super.key});
@@ -17,6 +16,10 @@ class FarmerHomePage extends StatelessWidget {
         .toList());
   }
 
+  Future<void> _signOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,16 +29,7 @@ class FarmerHomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Çıkış Yap',
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              if (context.mounted) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginPage()),
-                      (route) => false, // önceki sayfaları temizle
-                );
-              }
-            },
+            onPressed: () => _signOut(context),
           ),
         ],
       ),

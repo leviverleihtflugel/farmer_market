@@ -4,32 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../home/customer_home_page.dart';
 import '../home/farmer_home_page.dart';
-import '../auth/login_page.dart';
+import 'login_page.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
-
-  Future<Widget> _getHomeForUser(User user) async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      final role = doc.data()?['role'];
-
-      if (role == 'farmer') {
-        return const FarmerHomePage();
-      } else if (role == 'customer') {
-        return const CustomerHomePage();
-      } else {
-        return const LoginPage(); // bilinmeyen rol fallback
-      }
-    } catch (e) {
-      debugPrint("AuthGate role fetch error: $e");
-      return const LoginPage(); // hata durumunda girişe yönlendir
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,25 +20,35 @@ class AuthGate extends StatelessWidget {
           );
         }
 
-        final user = snapshot.data;
-
-        if (user != null) {
-          return FutureBuilder<Widget>(
-            future: _getHomeForUser(user),
-            builder: (context, roleSnapshot) {
-              if (roleSnapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.hasData) {
+          final user = snapshot.data!;
+          return FutureBuilder<DocumentSnapshot>(
+            future: FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
+            builder: (context, userSnapshot) {
+              if (userSnapshot.connectionState == ConnectionState.waiting) {
                 return const Scaffold(
                   body: Center(child: CircularProgressIndicator()),
                 );
-              } else if (roleSnapshot.hasData) {
-                return roleSnapshot.data!;
+              }
+
+              if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                return const LoginPage();
+              }
+
+              final data = userSnapshot.data!.data() as Map<String, dynamic>;
+              final role = data['role'];
+
+              if (role == 'farmer') {
+                return const FarmerHomePage();
+              } else if (role == 'customer') {
+                return const CustomerHomePage();
               } else {
-                return const LoginPage(); // fallback
+                return const LoginPage();
               }
             },
           );
         } else {
-          return const LoginPage(); // oturum yok
+          return const LoginPage();
         }
       },
     );

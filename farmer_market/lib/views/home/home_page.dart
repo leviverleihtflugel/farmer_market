@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // ← logout için gerekli
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/product.dart';
 import '../product/add_product_page.dart';
 
@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.logout),
             tooltip: 'Çıkış Yap',
             onPressed: () async {
-              await FirebaseAuth.instance.signOut(); // 🔓 Oturumu kapat
+              await FirebaseAuth.instance.signOut(); // sadece çıkış yeterli
             },
           ),
         ],

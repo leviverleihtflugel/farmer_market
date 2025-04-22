@@ -20,9 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('E-posta ve şifre boş olamaz!')),
-      );
+      _showSnackBar('E-posta ve şifre boş olamaz!');
       return;
     }
 
@@ -40,17 +38,12 @@ class _RegisterPageState extends State<RegisterPage> {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      if (!context.mounted) return;
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("✅ Kayıt başarılı! Rol: ${_selectedRole == 'farmer' ? 'Çiftçi' : 'Tüketici'}"),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      _showSnackBar("✅ Kayıt başarılı! Rol: ${_selectedRole == 'farmer' ? 'Çiftçi' : 'Tüketici'}");
 
-      // Yönlendirme yapmıyoruz, authStateChanges zaten tetiklenecek
+      // Not: AuthGate sayesinde yönlendirme otomatik yapılacak
 
     } on FirebaseAuthException catch (e) {
       String message = "Bir hata oluştu.";
@@ -62,18 +55,17 @@ class _RegisterPageState extends State<RegisterPage> {
         message = "Şifre en az 6 karakter olmalı.";
       }
 
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("❗ $message")));
-      }
+      _showSnackBar("❗ $message");
     } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("⚠️ Hata: ${e.toString()}")),
-        );
-      }
+      _showSnackBar("⚠️ Hata: $e");
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _showSnackBar(String message) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -88,17 +80,17 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Kayıt Ol')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             TextField(
               controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: 'E-posta',
-                border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.email),
+                border: OutlineInputBorder(),
               ),
-              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
             TextField(
@@ -106,8 +98,8 @@ class _RegisterPageState extends State<RegisterPage> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Şifre',
-                border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.lock),
+                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -115,8 +107,8 @@ class _RegisterPageState extends State<RegisterPage> {
               value: _selectedRole,
               decoration: const InputDecoration(
                 labelText: 'Rol Seçin',
-                border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.person_outline),
+                border: OutlineInputBorder(),
               ),
               items: const [
                 DropdownMenuItem(value: 'farmer', child: Text('Çiftçi')),
