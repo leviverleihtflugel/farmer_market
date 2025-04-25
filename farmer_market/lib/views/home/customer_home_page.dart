@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/product.dart';
 import '../auth/login_page.dart';
-import '../profile/profile_page.dart'; // 👈 Profil ekranı import edildi
+import '../profile/profile_page.dart';
 
 class CustomerHomePage extends StatelessWidget {
   const CustomerHomePage({super.key});

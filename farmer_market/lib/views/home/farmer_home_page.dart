@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/product.dart';
 import '../product/add_product_page.dart';
 import '../auth/login_page.dart';
-import '../profile/profile_page.dart'; // 👤 Profil sayfası için
+import '../profile/profile_page.dart';
+import '../../views/product/edit_product_page.dart';
 
 class FarmerHomePage extends StatelessWidget {
   const FarmerHomePage({super.key});
@@ -75,6 +76,57 @@ class FarmerHomePage extends StatelessWidget {
               return ListTile(
                 title: Text(p.name),
                 subtitle: Text("${p.price.toStringAsFixed(2)} ₺"),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      tooltip: 'Düzenle',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => EditProductPage(
+                              productId: p.id,
+                              initialName: p.name,
+                              initialPrice: p.price,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      tooltip: 'Sil',
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Ürünü Sil'),
+                            content: const Text('Bu ürünü silmek istediğinizden emin misiniz?'),
+                            actions: [
+                              TextButton(
+                                child: const Text('İptal'),
+                                onPressed: () => Navigator.pop(context, false),
+                              ),
+                              TextButton(
+                                child: const Text('Sil'),
+                                onPressed: () => Navigator.pop(context, true),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirm == true) {
+                          await FirebaseFirestore.instance
+                              .collection('products')
+                              .doc(p.id)
+                              .delete();
+                        }
+                      },
+                    ),
+                  ],
+                ),
               );
             },
           );

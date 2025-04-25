@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../auth/login_page.dart';
-import 'change_password_page.dart'; // 👈 yeni sayfa import edildi
+import 'change_password_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
