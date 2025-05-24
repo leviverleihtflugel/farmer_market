@@ -38,7 +38,3 @@ flutter {
     source = "../.."
 }
 
-dependencies {
-    implementation("com.google.firebase:firebase-auth:22.1.2")
-    implementation("com.google.firebase:firebase-core:21.1.1")
-}

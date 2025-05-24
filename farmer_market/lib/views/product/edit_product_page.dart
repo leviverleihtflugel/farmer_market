@@ -43,14 +43,12 @@ class _EditProductPageState extends State<EditProductPage> {
     setState(() => _isSaving = true);
 
     try {
-      await FirebaseFirestore.instance.collection('products').doc(widget.productId).update({
-        'name': name,
-        'price': price,
-      });
+      await FirebaseFirestore.instance
+          .collection('products')
+          .doc(widget.productId)
+          .update({'name': name, 'price': price});
 
-      if (context.mounted) {
-        Navigator.pop(context);
-      }
+      if (context.mounted) Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('⚠️ Hata: $e')),
@@ -71,33 +69,63 @@ class _EditProductPageState extends State<EditProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Ürünü Düzenle')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Ürün Adı'),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.edit, size: 48, color: Colors.deepPurple),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Ürün Adı',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.shopping_bag),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _priceController,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(
+                      labelText: 'Fiyat (₺)',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.attach_money),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      icon: _isSaving
+                          ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                          : const Icon(Icons.save),
+                      label: Text(_isSaving ? 'Kaydediliyor...' : 'Güncelle'),
+                      onPressed: _isSaving ? null : _updateProduct,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _priceController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Fiyat (₺)'),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton.icon(
-              icon: _isSaving
-                  ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-              )
-                  : const Icon(Icons.save),
-              label: Text(_isSaving ? 'Kaydediliyor...' : 'Güncelle'),
-              onPressed: _isSaving ? null : _updateProduct,
-            ),
-          ],
+          ),
         ),
       ),
     );

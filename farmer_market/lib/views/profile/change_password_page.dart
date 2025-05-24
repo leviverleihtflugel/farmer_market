@@ -15,7 +15,6 @@ class ChangePasswordPage extends StatelessWidget {
     }
 
     try {
-      // Türkçe e-posta gönderilmesi için dil ayarı
       FirebaseAuth.instance.setLanguageCode("tr");
 
       await FirebaseAuth.instance.sendPasswordResetEmail(email: user!.email!);
@@ -38,23 +37,38 @@ class ChangePasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Şifre Değiştir')),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Şifreni sıfırlamak için e-posta adresine bir bağlantı gönderilecektir.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.lock_reset, size: 48, color: Colors.deepPurple),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Şifreni sıfırlamak için e-posta adresine bir bağlantı gönderilecektir.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => _sendPasswordResetEmail(context),
+                    icon: const Icon(Icons.email),
+                    label: const Text('E-posta Gönder'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () => _sendPasswordResetEmail(context),
-              icon: const Icon(Icons.email),
-              label: const Text('E-posta Gönder'),
-            ),
-          ],
+          ),
         ),
       ),
     );

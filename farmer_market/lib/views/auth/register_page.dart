@@ -42,9 +42,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
       ScaffoldMessenger.of(context).clearSnackBars();
       _showSnackBar("✅ Kayıt başarılı! Rol: ${_selectedRole == 'farmer' ? 'Çiftçi' : 'Tüketici'}");
-
-      // Not: AuthGate sayesinde yönlendirme otomatik yapılacak
-
     } on FirebaseAuthException catch (e) {
       String message = "Bir hata oluştu.";
       if (e.code == 'email-already-in-use') {
@@ -54,7 +51,6 @@ class _RegisterPageState extends State<RegisterPage> {
       } else if (e.code == 'weak-password') {
         message = "Şifre en az 6 karakter olmalı.";
       }
-
       _showSnackBar("❗ $message");
     } catch (e) {
       _showSnackBar("⚠️ Hata: $e");
@@ -83,57 +79,84 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'E-posta',
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(),
-              ),
+            const SizedBox(height: 40),
+            Text(
+              'Yeni Hesap Oluştur',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Şifre',
-                prefixIcon: Icon(Icons.lock),
-                border: OutlineInputBorder(),
-              ),
+            Text(
+              'Devam etmek için bilgilerinizi girin',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _selectedRole,
-              decoration: const InputDecoration(
-                labelText: 'Rol Seçin',
-                prefixIcon: Icon(Icons.person_outline),
-                border: OutlineInputBorder(),
-              ),
-              items: const [
-                DropdownMenuItem(value: 'farmer', child: Text('Çiftçi')),
-                DropdownMenuItem(value: 'customer', child: Text('Tüketici')),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => _selectedRole = value);
-                }
-              },
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton.icon(
-                icon: _isLoading
-                    ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                )
-                    : const Icon(Icons.person_add),
-                label: Text(_isLoading ? 'Kayıt Yapılıyor...' : 'Kayıt Ol'),
-                onPressed: _isLoading ? null : _register,
+            const SizedBox(height: 32),
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'E-posta',
+                        prefixIcon: Icon(Icons.email),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Şifre',
+                        prefixIcon: Icon(Icons.lock),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: _selectedRole,
+                      decoration: const InputDecoration(
+                        labelText: 'Rol Seçin',
+                        prefixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'farmer', child: Text('Çiftçi')),
+                        DropdownMenuItem(value: 'customer', child: Text('Tüketici')),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _selectedRole = value);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton.icon(
+                        icon: _isLoading
+                            ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                            : const Icon(Icons.person_add),
+                        label: Text(_isLoading ? 'Kayıt Yapılıyor...' : 'Kayıt Ol'),
+                        onPressed: _isLoading ? null : _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
