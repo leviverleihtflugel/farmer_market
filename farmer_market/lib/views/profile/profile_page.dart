@@ -47,23 +47,32 @@ class ProfilePage extends StatelessWidget {
           }
 
           final data = snapshot.data!;
-          final role = data['role'] ?? 'Bilinmiyor';
+          final role = data['role'] == 'farmer' ? 'Üretici' : 'Tüketici';
 
           return Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 24),
                 CircleAvatar(
-                  radius: 40,
+                  radius: 48,
                   backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                  child: const Icon(Icons.person, size: 48),
+                  child: Icon(Icons.person, size: 48, color: Theme.of(context).colorScheme.onPrimaryContainer),
                 ),
-                const SizedBox(height: 16),
-                Text(user?.email ?? '',
-                    style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 20),
+                Text(
+                  user?.email ?? '',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
-                Text('Rol: $role', style: Theme.of(context).textTheme.bodyMedium),
+                Chip(
+                  label: Text('Rol: $role'),
+                  backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                ),
                 const SizedBox(height: 32),
+                Divider(thickness: 1.2, color: Theme.of(context).dividerColor),
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(

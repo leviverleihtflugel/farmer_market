@@ -7,6 +7,7 @@ import '../product/add_product_page.dart';
 import '../auth/login_page.dart';
 import '../profile/profile_page.dart';
 import '../../views/product/edit_product_page.dart';
+import '../../views/product/product_detail_page.dart';
 import '../../core/theme/theme_provider.dart';
 
 class FarmerHomePage extends StatefulWidget {
@@ -101,9 +102,18 @@ class _FarmerHomePageState extends State<FarmerHomePage> {
                   dropdownColor: Theme.of(context).cardColor,
                   style: Theme.of(context).textTheme.bodyMedium,
                   items: const [
-                    DropdownMenuItem(value: 'Varsayılan', child: Text('Varsayılan')),
-                    DropdownMenuItem(value: 'Artan', child: Text('Fiyat: Artan')),
-                    DropdownMenuItem(value: 'Azalan', child: Text('Fiyat: Azalan')),
+                    DropdownMenuItem(
+                      value: 'Varsayılan',
+                      child: Text('Varsayılan'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Artan',
+                      child: Text('Fiyat: Artan'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Azalan',
+                      child: Text('Fiyat: Azalan'),
+                    ),
                   ],
                   onChanged: (value) {
                     if (value != null) {
@@ -150,97 +160,112 @@ class _FarmerHomePageState extends State<FarmerHomePage> {
                   itemBuilder: (context, index) {
                     final p = products[index];
 
-                    return Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: p.imageUrl != null
-                                  ? Image.network(
-                                p.imageUrl!,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              )
-                                  : Container(
-                                width: 80,
-                                height: 80,
-                                color: Colors.grey[300],
-                                child: const Icon(Icons.image_not_supported),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ProductDetailPage(product: p),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: p.imageUrl != null
+                                    ? Image.network(
+                                  p.imageUrl!,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                )
+                                    : Container(
+                                  width: 80,
+                                  height: 80,
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.image_not_supported),
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      p.name,
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: textColor),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "${p.price.toStringAsFixed(2)} ₺",
+                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: textColor),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "Stok: ${p.stockKg} kg",
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: textColor),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Column(
                                 children: [
-                                  Text(
-                                    p.name,
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: textColor),
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Colors.blue),
+                                    tooltip: 'Düzenle',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => EditProductPage(
+                                            productId: p.id,
+                                            initialName: p.name,
+                                            initialPrice: p.price,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    "${p.price.toStringAsFixed(2)} ₺",
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: textColor),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.red),
+                                    tooltip: 'Sil',
+                                    onPressed: () async {
+                                      final confirm = await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('Ürünü Sil'),
+                                          content: const Text('Bu ürünü silmek istediğinizden emin misiniz?'),
+                                          actions: [
+                                            TextButton(
+                                              child: const Text('İptal'),
+                                              onPressed: () => Navigator.pop(context, false),
+                                            ),
+                                            TextButton(
+                                              child: const Text('Sil'),
+                                              onPressed: () => Navigator.pop(context, true),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+
+                                      if (confirm == true) {
+                                        await FirebaseFirestore.instance
+                                            .collection('products')
+                                            .doc(p.id)
+                                            .delete();
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
-                            ),
-                            Column(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit, color: Colors.blue),
-                                  tooltip: 'Düzenle',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => EditProductPage(
-                                          productId: p.id,
-                                          initialName: p.name,
-                                          initialPrice: p.price,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                                  tooltip: 'Sil',
-                                  onPressed: () async {
-                                    final confirm = await showDialog<bool>(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('Ürünü Sil'),
-                                        content: const Text('Bu ürünü silmek istediğinizden emin misiniz?'),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text('İptal'),
-                                            onPressed: () => Navigator.pop(context, false),
-                                          ),
-                                          TextButton(
-                                            child: const Text('Sil'),
-                                            onPressed: () => Navigator.pop(context, true),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-
-                                    if (confirm == true) {
-                                      await FirebaseFirestore.instance
-                                          .collection('products')
-                                          .doc(p.id)
-                                          .delete();
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
