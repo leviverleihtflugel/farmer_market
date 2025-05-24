@@ -39,9 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
       });
 
       if (!mounted) return;
-
-      ScaffoldMessenger.of(context).clearSnackBars();
-      _showSnackBar("✅ Kayıt başarılı! Rol: ${_selectedRole == 'farmer' ? 'Çiftçi' : 'Tüketici'}");
+      _showSnackBar("✅ Kayıt başarılı! Rol: ${_selectedRole == 'farmer' ? 'Üretici' : 'Tüketici'}");
     } on FirebaseAuthException catch (e) {
       String message = "Bir hata oluştu.";
       if (e.code == 'email-already-in-use') {
@@ -74,24 +72,31 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Kayıt Ol')),
+      appBar: AppBar(
+        title: const Text('Kayıt Ol'),
+        leading: BackButton(color: Theme.of(context).iconTheme.color),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const SizedBox(height: 40),
+            Image.asset(
+              'assets/images/logo.png',
+              height: 100,
+            ),
+            const SizedBox(height: 20),
             Text(
               'Yeni Hesap Oluştur',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             Text(
               'Devam etmek için bilgilerinizi girin',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 30),
             Card(
-              elevation: 3,
+              elevation: 4,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -102,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         labelText: 'E-posta',
-                        prefixIcon: Icon(Icons.email),
+                        prefixIcon: Icon(Icons.email_outlined),
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -112,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Şifre',
-                        prefixIcon: Icon(Icons.lock),
+                        prefixIcon: Icon(Icons.lock_outline),
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -125,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         border: OutlineInputBorder(),
                       ),
                       items: const [
-                        DropdownMenuItem(value: 'farmer', child: Text('Çiftçi')),
+                        DropdownMenuItem(value: 'farmer', child: Text('Üretici')),
                         DropdownMenuItem(value: 'customer', child: Text('Tüketici')),
                       ],
                       onChanged: (value) {
@@ -149,8 +154,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         label: Text(_isLoading ? 'Kayıt Yapılıyor...' : 'Kayıt Ol'),
                         onPressed: _isLoading ? null : _register,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                       ),

@@ -75,99 +75,113 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Giriş Yap'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.brightness_6),
-            tooltip: 'Temayı Değiştir',
-            onPressed: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-            },
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: isDark
+                ? [Colors.black, Colors.grey[900]!]
+                : [Colors.white, Colors.purple[50]!],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
+        ),
         padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            Text(
-              'Hoş Geldiniz',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Devam etmek için giriş yapın',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 32),
-            Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'E-posta',
-                        prefixIcon: Icon(Icons.email),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Şifre',
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton.icon(
-                        icon: _isLoading
-                            ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                            : const Icon(Icons.login),
-                        label: Text(_isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'),
-                        onPressed: _isLoading ? null : _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const RegisterPage()),
-                        );
-                      },
-                      child: const Text('Hesabın yok mu? Kayıt Ol'),
-                    ),
-                  ],
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Logo
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 120,
                 ),
-              ),
+                const SizedBox(height: 24),
+                Text(
+                  'Farmer Market',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Hoş geldiniz 👋',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 30),
+
+                // Giriş Formu
+                Card(
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            labelText: 'E-posta',
+                            prefixIcon: Icon(Icons.email_outlined),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Şifre',
+                            prefixIcon: Icon(Icons.lock_outline),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _login,
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: _isLoading
+                                ? const CircularProgressIndicator(color: Colors.white)
+                                : const Text('Giriş Yap', style: TextStyle(fontSize: 16)),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const RegisterPage()),
+                            );
+                          },
+                          child: const Text('Hesabın yok mu? Kayıt Ol'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                IconButton(
+                  onPressed: () {
+                    Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+                  },
+                  icon: const Icon(Icons.brightness_6),
+                  tooltip: 'Temayı Değiştir',
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
