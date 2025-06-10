@@ -1,5 +1,6 @@
 **Çiftçilerle Doğrudan Alışveriş Platformu** 🌱
 # Farmer Market
+![image](https://github.com/user-attachments/assets/94cb8923-d9e0-4b9c-876d-3aab705f5547)
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.22-blue?logo=flutter) ![Firebase](https://img.shields.io/badge/Firebase-BaaS-yellow?logo=firebase)
 
