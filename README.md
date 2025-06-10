@@ -41,9 +41,18 @@ lib/
 ---
 ## Ekran Görüntüleri
 
+![image](https://github.com/user-attachments/assets/fc829c37-6937-404c-9761-31b481293a26)
 
+![image](https://github.com/user-attachments/assets/96b7df3b-6a40-41eb-a199-0fba1e999bee)
 
+![image](https://github.com/user-attachments/assets/fde09aa9-e471-41fc-be79-55006bc1a631)
 
+![image](https://github.com/user-attachments/assets/86fa65ab-ed86-4cc7-a349-e87adf48afcf)
 
+![image](https://github.com/user-attachments/assets/50f67160-36db-4c07-9a9f-4594c739f34d)
+
+![image](https://github.com/user-attachments/assets/b164a439-cd04-444f-be87-2f90dca16d9c)
+
+![image](https://github.com/user-attachments/assets/63777c63-e74b-4f8a-b810-a33b049bc7c6)
 
 
